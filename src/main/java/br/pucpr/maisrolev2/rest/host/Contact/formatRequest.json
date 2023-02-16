@@ -1,0 +1,9 @@
+{
+  "id": "long",
+  "name": "string",
+  "password": "string",
+  "contact": {
+    "email": "string",
+    "phone": "string"
+  }
+}
