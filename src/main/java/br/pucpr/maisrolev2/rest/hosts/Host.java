@@ -1,7 +1,7 @@
-package br.pucpr.maisrolev2.rest.host;
+package br.pucpr.maisrolev2.rest.hosts;
 
-import br.pucpr.maisrolev2.rest.host.Address.Address;
-import br.pucpr.maisrolev2.rest.host.Contact.Contact;
+import br.pucpr.maisrolev2.rest.hosts.Address.Address;
+import br.pucpr.maisrolev2.rest.hosts.Contact.Contact;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

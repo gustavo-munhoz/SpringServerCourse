@@ -1,4 +1,4 @@
-package br.pucpr.maisrolev2.rest.host;
+package br.pucpr.maisrolev2.rest.hosts;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

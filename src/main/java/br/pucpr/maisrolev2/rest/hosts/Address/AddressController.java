@@ -1,6 +1,5 @@
-package br.pucpr.maisrolev2.rest.host.Address;
+package br.pucpr.maisrolev2.rest.hosts.Address;
 
-import br.pucpr.maisrolev2.rest.host.Host;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

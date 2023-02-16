@@ -1,4 +1,4 @@
-package br.pucpr.maisrolev2.rest.host.Contact;
+package br.pucpr.maisrolev2.rest.hosts.Contact;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

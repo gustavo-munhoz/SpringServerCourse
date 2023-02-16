@@ -1,4 +1,4 @@
-package br.pucpr.maisrolev2.rest.host.Address;
+package br.pucpr.maisrolev2.rest.hosts.Address;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

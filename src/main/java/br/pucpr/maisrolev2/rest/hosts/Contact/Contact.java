@@ -1,9 +1,7 @@
-package br.pucpr.maisrolev2.rest.host.Contact;
+package br.pucpr.maisrolev2.rest.hosts.Contact;
 
-import br.pucpr.maisrolev2.rest.host.Host;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Entity @Data

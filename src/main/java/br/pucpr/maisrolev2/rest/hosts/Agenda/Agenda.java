@@ -1,4 +1,4 @@
-package br.pucpr.maisrolev2.rest.host.Agenda;
+package br.pucpr.maisrolev2.rest.hosts.Agenda;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

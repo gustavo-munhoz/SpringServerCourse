@@ -1,10 +1,7 @@
-package br.pucpr.maisrolev2.rest.host.Address;
+package br.pucpr.maisrolev2.rest.hosts.Address;
 
-import br.pucpr.maisrolev2.rest.host.Host;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 
 @Entity @Data

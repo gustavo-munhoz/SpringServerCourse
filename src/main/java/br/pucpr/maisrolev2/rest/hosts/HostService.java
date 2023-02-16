@@ -1,9 +1,9 @@
-package br.pucpr.maisrolev2.rest.host;
+package br.pucpr.maisrolev2.rest.hosts;
 
-import br.pucpr.maisrolev2.rest.host.Address.Address;
-import br.pucpr.maisrolev2.rest.host.Address.AddressService;
-import br.pucpr.maisrolev2.rest.host.Contact.Contact;
-import br.pucpr.maisrolev2.rest.host.Contact.ContactService;
+import br.pucpr.maisrolev2.rest.hosts.Address.Address;
+import br.pucpr.maisrolev2.rest.hosts.Address.AddressService;
+import br.pucpr.maisrolev2.rest.hosts.Contact.Contact;
+import br.pucpr.maisrolev2.rest.hosts.Contact.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
