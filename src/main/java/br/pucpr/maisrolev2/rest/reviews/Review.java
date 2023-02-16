@@ -7,6 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
+@NamedQuery(
+        name="Review.findAllByUserId",
+        query="SELECT r FROM Review r" +
+                " JOIN r.user u" +
+                " WHERE u = :id" +
+                " ORDER BY r.id"
+)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
