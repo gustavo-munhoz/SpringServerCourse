@@ -1,20 +1,16 @@
-package br.pucpr.maisrolev2;
+package br.pucpr.maisrolev2.rest.host.Address;
 
 import br.pucpr.maisrolev2.rest.host.Host;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.Set;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity @Data
 public class Address {
     @Id
     private Long id;
-
     private String stree;
     private String number;
     private String CEP;
@@ -22,6 +18,4 @@ public class Address {
     private String city;
     private String state;
 
-    @OneToOne(mappedBy = "address")
-    private Host host;
 }

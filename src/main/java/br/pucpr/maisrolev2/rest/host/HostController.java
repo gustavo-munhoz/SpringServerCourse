@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/hosts")
-public class HostResource {
-    private HostService service;
+public class HostController {
+    private final HostService service;
 
-    public HostResource(HostService service) {this.service = service;}
+    public HostController(HostService service) {this.service = service;}
     @PostMapping
     @Transactional
-    public Host add(@Valid @RequestBody Host host) {return service.add(host); }
+    public Host add(@Valid @RequestBody Host host) {
+        return service.add(host);
+    }
 
 }
