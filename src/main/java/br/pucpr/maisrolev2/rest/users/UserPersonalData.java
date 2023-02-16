@@ -1,9 +1,9 @@
 package br.pucpr.maisrolev2.rest.users;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+@Entity
 public class UserPersonalData {
     @Id
     @GeneratedValue
@@ -14,5 +14,6 @@ public class UserPersonalData {
     @NotBlank
     private String lastName;
     private String dateOfBirth;
+    @Column(unique = true, nullable = false)
     private String email;
 }
