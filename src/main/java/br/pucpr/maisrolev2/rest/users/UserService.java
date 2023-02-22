@@ -4,6 +4,7 @@ import br.pucpr.maisrolev2.lib.exception.NotFoundException;
 import br.pucpr.maisrolev2.rest.reviews.Review;
 import br.pucpr.maisrolev2.rest.reviews.ReviewRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +12,9 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final ReviewRepository reviewRepository;
     public UserService(UserRepository userRepository, ReviewRepository reviewRepository) {
         this.userRepository = userRepository;
@@ -19,10 +22,7 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (user.isPresent()) return user.get();
-        else throw new NotFoundException(id);
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
     public List<User> getAllUsers() {
@@ -34,12 +34,20 @@ public class UserService {
     public List<Review> getReviewsByUser(Long id) {
         List<Review> reviews = reviewRepository.findAllByUserId(id);
 
-        if (reviews.isEmpty()) throw new NotFoundException(id);
+        if (reviews.isEmpty()) throw new NotFoundException(id, "No users registered.");
         return reviews;
     }
 
     @Transactional
     public User add(User user) {return userRepository.save(user);}
+
+    /*
+    @Transactional
+    public User update(User user) {
+        return userRepository
+    }
+
+     */
 
     @Transactional
     public void deleteUser(Long id) {

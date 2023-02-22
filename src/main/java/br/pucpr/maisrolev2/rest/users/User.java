@@ -3,7 +3,6 @@ package br.pucpr.maisrolev2.rest.users;
 import br.pucpr.maisrolev2.rest.Role;
 import br.pucpr.maisrolev2.rest.reviews.Review;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -11,7 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,10 +33,10 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     @ElementCollection
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
     @OneToOne
     @NotNull
     private UserPersonalData personalData;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Review> reviews = new HashSet<>();
+    private List<Review> reviews = new ArrayList<>();
 }

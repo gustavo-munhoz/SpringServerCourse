@@ -13,6 +13,11 @@ public class NotFoundException extends NoSuchElementException {
         this("Not Found: " + id);
     }
 
+    public NotFoundException(Long id, String description) {
+        super("Not Found: " + id +
+             ", Cause:" + description);
+    }
+
     public NotFoundException(String s, Throwable cause) {
         super(s, cause);
     }
