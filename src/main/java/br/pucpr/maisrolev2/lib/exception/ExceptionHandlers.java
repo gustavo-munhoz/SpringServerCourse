@@ -27,16 +27,4 @@ public class ExceptionHandlers {
                 ).collect(Collectors.joining(", "));
         return ResponseEntity.badRequest().body(error);
     }
-    /*
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleFilterException(NotFoundException ex) {
-        List<String> details = new ArrayList<>();
-        details.add(ex.getMessage());
-
-
-
-    }
-
-     */
 }
