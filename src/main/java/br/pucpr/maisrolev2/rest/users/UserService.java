@@ -27,14 +27,14 @@ public class UserService {
 
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
-        if (users.isEmpty()) throw new NotFoundException("users");
+        if (users.isEmpty()) throw new NotFoundException("No users registered");
         return users;
     }
 
     public List<Review> getReviewsByUser(Long id) {
         List<Review> reviews = reviewRepository.findAllByUserId(id);
 
-        if (reviews.isEmpty()) throw new NotFoundException(id, "No users registered.");
+        if (reviews.isEmpty()) throw new NotFoundException(id, "User has no reviews posted.");
         return reviews;
     }
 
