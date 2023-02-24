@@ -3,12 +3,14 @@ package br.pucpr.maisrolev2.rest.users;
 import br.pucpr.maisrolev2.rest.Role;
 import br.pucpr.maisrolev2.rest.reviews.Review;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,8 +37,4 @@ public class User {
     private UserPersonalData personalData;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Review> reviews = new HashSet<>();
-
-    public Set<Role> getRoles(){
-        return this.roles;
-    }
 }
