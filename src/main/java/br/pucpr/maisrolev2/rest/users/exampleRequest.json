@@ -1,0 +1,10 @@
+{
+  "username": "janedoe",
+  "password": "mYp@s$w0rd",
+  "personalData": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "cellNumber": "+55 (41) 98510-6083",
+    "email": "jane.doe@gmail.com"
+  }
+}
