@@ -27,4 +27,20 @@ public class ExceptionHandlers {
                 ).collect(Collectors.joining(", "));
         return ResponseEntity.badRequest().body(error);
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getMessage());
+
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND,
+                "Resource not found",
+                details
+        );
+
+        return ResponseEntityBuilder.build(error);
+    }
 }

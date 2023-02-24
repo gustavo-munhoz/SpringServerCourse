@@ -34,7 +34,14 @@ public class UserController {
         return service.add(user);
     }
 
+    @PutMapping("/update")
+    @RolesAllowed("USER")
+    public void update(@Valid @RequestBody User user) {
+        service.update(user.getId(), user);
+    }
+
     @DeleteMapping("{id}")
+    @RolesAllowed("USER")
     public void delete(@PathVariable("id") Long id) {
         service.deleteUser(id);
     }

@@ -40,13 +40,23 @@ public class UserService {
     @Transactional
     public User add(User user) {return userRepository.save(user);}
 
-    /*
+
     @Transactional
-    public User update(User user) {
-        return userRepository
+    public void update(Long id, User user) {
+        var existingUser = userRepository.findById(id);
+        if (existingUser.isPresent()) {
+            var updated = existingUser.get();
+            updated.setUsername(user.getUsername());
+            updated.setPassword(user.getPassword());
+            updated.setRoles(user.getRoles());
+            updated.setPersonalData(user.getPersonalData());
+            updated.setReviews(user.getReviews());
+
+            userRepository.save(updated);
+        }
     }
 
-     */
+
 
     @Transactional
     public void deleteUser(Long id) {
