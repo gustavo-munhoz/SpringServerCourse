@@ -9,11 +9,11 @@ public class UserPersonalData {
     @GeneratedValue
     private Long id;
     private String cellNumber;
-    @NotBlank
+
     private String firstName;
-    @NotBlank
+
     private String lastName;
     private String dateOfBirth;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
 }

@@ -27,12 +27,11 @@ public class User {
     private String username;
 
     @Size(min = 8)
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>])[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]")
     private String password;
     @Enumerated(EnumType.STRING)
     @ElementCollection
     private Set<Role> roles;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @NotNull
     private UserPersonalData personalData;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
