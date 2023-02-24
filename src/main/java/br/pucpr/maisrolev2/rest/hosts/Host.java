@@ -2,15 +2,12 @@ package br.pucpr.maisrolev2.rest.hosts;
 
 import br.pucpr.maisrolev2.rest.hosts.Address.Address;
 import br.pucpr.maisrolev2.rest.hosts.Contact.Contact;
-import br.pucpr.maisrolev2.rest.reviews.Review;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,9 +31,6 @@ public class Host {
 
     @OneToOne(cascade = jakarta.persistence.CascadeType.ALL)
     private Address address;
-
-    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
-    private List<Review> reviews = new ArrayList<>();
 
     //private Agenda agenda;
     //private Event event

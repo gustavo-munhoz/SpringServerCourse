@@ -7,13 +7,9 @@ import br.pucpr.maisrolev2.rest.hosts.Contact.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
 public class HostService {
-
     private final HostRepository hostRepository;
-
     @Autowired
     private ContactService contactService;
     private AddressService addressService;
