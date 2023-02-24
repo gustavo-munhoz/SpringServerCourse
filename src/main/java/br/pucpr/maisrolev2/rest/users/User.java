@@ -2,22 +2,30 @@ package br.pucpr.maisrolev2.rest.users;
 
 import br.pucpr.maisrolev2.rest.Role;
 import br.pucpr.maisrolev2.rest.reviews.Review;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@NamedQuery(
+    name = "User.findByUsername",
+    query = "select u " +
+            "from User u " +
+            "where upper(u.username) " +
+            "like upper(:username)"
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue

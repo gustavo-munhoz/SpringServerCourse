@@ -1,6 +1,7 @@
 package br.pucpr.maisrolev2.rest.users;
 
 import br.pucpr.maisrolev2.lib.exception.NotFoundException;
+import br.pucpr.maisrolev2.lib.exception.UnauthorizedException;
 import br.pucpr.maisrolev2.rest.reviews.Review;
 import br.pucpr.maisrolev2.rest.reviews.ReviewRepository;
 import jakarta.transaction.Transactional;
@@ -19,6 +20,19 @@ public class UserService {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
     }
+
+    public User logUser(String username, String password) {
+        var user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            var found = user.get();
+            if (found.getPassword().equals(password)) {
+                return found;
+            }
+            throw new UnauthorizedException("Incorrect username or password.");
+        }
+        throw new NotFoundException("User not found.");
+    }
+
 
     public User getUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
@@ -55,8 +69,6 @@ public class UserService {
             userRepository.save(updated);
         }
     }
-
-
 
     @Transactional
     public void deleteUser(Long id) {

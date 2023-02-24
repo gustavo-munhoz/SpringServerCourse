@@ -34,6 +34,12 @@ public class UserController {
         return service.add(user);
     }
 
+    @PostMapping("/login")
+    @PermitAll
+    public User login(@RequestBody String username, @RequestBody String password) {
+        return service.logUser(username, password);
+    }
+
     @PutMapping("/update")
     @RolesAllowed("USER")
     public void update(@Valid @RequestBody User user) {
