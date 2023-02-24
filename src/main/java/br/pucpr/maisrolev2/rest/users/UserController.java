@@ -6,6 +6,8 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,8 +38,9 @@ public class UserController {
 
     @PostMapping("/register")
     @PermitAll
-    public User register(@Valid @RequestBody User user){
-        return service.add(user);
+    public ResponseEntity<User> registerUser(@RequestBody User user) {
+        service.add(user);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
