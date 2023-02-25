@@ -1,6 +1,7 @@
 package br.pucpr.maisrolev2.rest.users;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Entity
@@ -10,11 +11,11 @@ public class UserPersonalData {
     @GeneratedValue
     private Long id;
     private String cellNumber;
-
+    @NotBlank
     private String firstName;
-
+    @NotBlank
     private String lastName;
     private String dateOfBirth;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 }

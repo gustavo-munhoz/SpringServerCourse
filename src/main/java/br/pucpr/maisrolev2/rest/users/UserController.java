@@ -43,6 +43,12 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PostMapping("/login")
+    @PermitAll
+    public User login(@RequestBody String username, @RequestBody String password) {
+        return service.logUser(username, password);
+    }
+
     @PutMapping("/update")
     @Transactional
     @RolesAllowed("USER")

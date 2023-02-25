@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>br.pucpr</groupId>
-    <artifactId>musicserver</artifactId>
+    <artifactId>MaisRoleV2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>musicserver</name>
     <description>Music Server</description>
