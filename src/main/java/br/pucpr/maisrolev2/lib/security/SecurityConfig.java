@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -48,31 +49,23 @@ public class SecurityConfig {
         return http
                 .cors().and()
                 .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .exceptionHandling()
                 .authenticationEntryPoint(
                         (req, res, ex) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage())
                 )
                 .and()
-                .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET).permitAll()
-                .requestMatchers(HttpMethod.POST).permitAll()
-                .and().build();
-                /*
-                .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/hosts/register").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/hosts/login").permitAll()
-
-                .anyRequest().authenticated().and()
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers(HttpMethod.GET).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/hosts/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/hosts/login").permitAll()
+                        .anyRequest().authenticated())
                 .addFilterBefore(
                         jwtTokenFilter,
                         UsernamePasswordAuthenticationFilter.class
                 ).build();
-
-                 */
     }
     @Bean
     public CorsFilter corsFilter() {

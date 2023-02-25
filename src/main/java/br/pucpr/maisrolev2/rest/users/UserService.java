@@ -3,12 +3,9 @@ package br.pucpr.maisrolev2.rest.users;
 import br.pucpr.maisrolev2.lib.exception.NotFoundException;
 import br.pucpr.maisrolev2.rest.reviews.Review;
 import br.pucpr.maisrolev2.rest.reviews.ReviewRepository;
-import br.pucpr.maisrolev2.rest.users.personalData.PersonalDataRepository;
-import br.pucpr.maisrolev2.rest.users.personalData.PersonalDataService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
