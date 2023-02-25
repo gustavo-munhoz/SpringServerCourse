@@ -2,8 +2,10 @@ package br.pucpr.maisrolev2.rest.users;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 @Entity
+@Data
 public class UserPersonalData {
     @Id
     @GeneratedValue
