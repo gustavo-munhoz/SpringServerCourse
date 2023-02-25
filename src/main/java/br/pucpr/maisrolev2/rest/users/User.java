@@ -33,7 +33,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @NotNull
     @JsonProperty
-    private PersonalData personalData;
+    private UserPersonalData personalData;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Review> reviews = new HashSet<>();
 }
