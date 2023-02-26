@@ -1,5 +1,6 @@
 package br.pucpr.maisrolev2.rest.users;
 
+import br.pucpr.maisrolev2.lib.exception.AlreadyExistsException;
 import br.pucpr.maisrolev2.lib.exception.NotFoundException;
 import br.pucpr.maisrolev2.lib.exception.UnauthorizedException;
 import br.pucpr.maisrolev2.rest.reviews.Review;
@@ -34,7 +35,7 @@ public class UserService {
 
 
     public User getUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found: " + id));
     }
 
     public List<User> getAllUsers() {
@@ -52,7 +53,10 @@ public class UserService {
 
     @Transactional
     public User add(User user) {
-        return userRepository.save(user);
+        if (userRepository.findByUsername(user.getUsername()).isEmpty()) {
+            return userRepository.save(user);
+        }
+        else throw new AlreadyExistsException("Username already taken.");
     }
 
     @Transactional
@@ -68,6 +72,7 @@ public class UserService {
 
             userRepository.save(updated);
         }
+        else throw new NotFoundException("User not found: " + id);
     }
 
     @Transactional

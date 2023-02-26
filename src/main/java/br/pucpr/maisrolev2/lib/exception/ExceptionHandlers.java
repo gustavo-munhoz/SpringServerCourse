@@ -43,4 +43,34 @@ public class ExceptionHandlers {
 
         return ResponseEntityBuilder.build(error);
     }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getMessage());
+
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED,
+                "Unauthorized",
+                details
+        );
+
+        return ResponseEntityBuilder.build(error);
+    }
+
+    public ResponseEntity<Object> handleAlreadyExistsException(AlreadyExistsException ex) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getMessage());
+
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST,
+                "Resource already exists",
+                details
+        );
+
+        return ResponseEntityBuilder.build(error);
+    }
 }

@@ -1,5 +1,9 @@
 package br.pucpr.maisrolev2.rest.users;
 
+import br.pucpr.maisrolev2.lib.exception.AlreadyExistsException;
+import br.pucpr.maisrolev2.lib.exception.ExceptionHandlers;
+import br.pucpr.maisrolev2.lib.exception.NotFoundException;
+import br.pucpr.maisrolev2.lib.exception.UnauthorizedException;
 import br.pucpr.maisrolev2.rest.reviews.Review;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
@@ -16,37 +20,63 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService service;
-    public UserController(UserService service) {this.service = service;}
+    private final ExceptionHandlers exceptionHandler;
+    public UserController(UserService service, ExceptionHandlers exceptionHandler) {
+        this.service = service;
+        this.exceptionHandler = exceptionHandler;
+    }
 
     @GetMapping("{id}")
     @Transactional
-    public User searchUser(@PathVariable(value = "id") Long id) {
-        return service.getUser(id);
+    public ResponseEntity<Object> searchUser(@PathVariable(value = "id") Long id) {
+        try {
+            return ResponseEntity.ok(service.getUser(id));
+        } catch (NotFoundException e) {
+            return exceptionHandler.handleNotFoundException(e);
+        }
     }
 
     @GetMapping("/all")
     @Transactional
-    public List<User> showAllUsers() { return service.getAllUsers();}
+    public ResponseEntity<Object> showAllUsers() {
+        try {
+            return ResponseEntity.ok(service.getAllUsers());
+        } catch (NotFoundException e) {
+            return exceptionHandler.handleNotFoundException(e);
+        }
+    }
 
     @GetMapping("{id}/reviews")
     @Transactional
     @RolesAllowed("USER")
     @SecurityRequirement(name = "AuthServer")
-    public List<Review> getAllReviews(@PathVariable("id") Long id) {
-        return service.getReviewsByUser(id);
+    public ResponseEntity<Object> getAllReviews(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok(service.getReviewsByUser(id));
+        } catch (NotFoundException e) {
+            return exceptionHandler.handleNotFoundException(e);
+        }
     }
 
     @PostMapping("/register")
     @PermitAll
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        service.add(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    public ResponseEntity<Object> registerUser(@RequestBody User user) {
+        try {
+            service.add(user);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch (AlreadyExistsException e) {
+            return exceptionHandler.handleAlreadyExistsException(e);
+        }
     }
 
     @PostMapping("/login")
     @PermitAll
-    public User login(@RequestBody String username, @RequestBody String password) {
-        return service.logUser(username, password);
+    public ResponseEntity<Object> login(@RequestBody String username, @RequestBody String password) {
+        try {
+            return ResponseEntity.ok(service.logUser(username, password));
+        } catch (UnauthorizedException e) {
+            return exceptionHandler.handleUnauthorizedException(e);
+        }
     }
 
     @PutMapping("/update")
