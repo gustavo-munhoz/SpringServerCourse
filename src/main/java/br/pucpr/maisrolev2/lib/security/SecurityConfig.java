@@ -49,23 +49,31 @@ public class SecurityConfig {
         return http
                 .cors().and()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(
                         (req, res, ex) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage())
                 )
                 .and()
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.GET).permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/hosts/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/hosts/login").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.GET).permitAll()
+                .requestMatchers(HttpMethod.POST).permitAll()
+                .and().build();
+                /*
+                .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/hosts/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/hosts/login").permitAll()
+
+                .anyRequest().authenticated().and()
                 .addFilterBefore(
                         jwtTokenFilter,
                         UsernamePasswordAuthenticationFilter.class
                 ).build();
+
+                 */
     }
     @Bean
     public CorsFilter corsFilter() {

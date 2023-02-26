@@ -1,6 +1,7 @@
 {
   "username": "janedoe",
   "password": "mYp@s$w0rd",
+  "roles": ["ADMIN"],
   "personalData": {
     "firstName": "Jane",
     "lastName": "Doe",
