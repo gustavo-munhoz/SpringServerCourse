@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,7 +31,7 @@ public class User {
     @Size(min = 5, max = 30)
     private String username;
 
-    @Size(min = 8)
+    @Size(min = 8, max = 40)
     private String password;
     @Enumerated(EnumType.STRING)
     @ElementCollection

@@ -67,7 +67,9 @@ public class UserController {
     public ResponseEntity<Object> registerUser(@Valid @RequestBody User user, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
-                throw new MethodArgumentNotValidException()
+                throw new MethodArgumentNotValidException(new MethodParameter(
+                        service.getClass().getDeclaredMethod("add", User.class), 0),
+                        bindingResult);
             }
             service.add(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
@@ -75,6 +77,8 @@ public class UserController {
             return exceptionHandler.handleAlreadyExistsException(e);
         } catch (MethodArgumentNotValidException e) {
             return exceptionHandler.handleValidationException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 
