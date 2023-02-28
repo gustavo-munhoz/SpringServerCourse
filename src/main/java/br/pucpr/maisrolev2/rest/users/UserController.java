@@ -10,11 +10,15 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -60,20 +64,25 @@ public class UserController {
 
     @PostMapping("/register")
     @PermitAll
-    public ResponseEntity<Object> registerUser(@RequestBody User user) {
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody User user, BindingResult bindingResult) {
         try {
+            if (bindingResult.hasErrors()) {
+                throw new MethodArgumentNotValidException()
+            }
             service.add(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (AlreadyExistsException e) {
             return exceptionHandler.handleAlreadyExistsException(e);
+        } catch (MethodArgumentNotValidException e) {
+            return exceptionHandler.handleValidationException(e);
         }
     }
 
     @PostMapping("/login")
     @PermitAll
-    public ResponseEntity<Object> login(@RequestBody String username, @RequestBody String password) {
+    public ResponseEntity<Object> login(@RequestBody UserLoginRequest req) {
         try {
-            return ResponseEntity.ok(service.logUser(username, password));
+            return ResponseEntity.ok(service.logUser(req.getUsername(), req.getPassword()));
         } catch (UnauthorizedException e) {
             return exceptionHandler.handleUnauthorizedException(e);
         }

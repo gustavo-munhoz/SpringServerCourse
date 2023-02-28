@@ -33,11 +33,9 @@ public class UserService {
         throw new NotFoundException("User not found.");
     }
 
-
     public User getUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found: " + id));
     }
-
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) throw new NotFoundException("No users registered");
