@@ -56,14 +56,15 @@ public class JWT {
     }
     public String createToken(User user) {
         final var now = LocalDate.now();
+        settings.setUser(user);
         return Jwts.builder()
                 .signWith(Keys.hmacShaKeyFor(settings.getSecret().getBytes()))
                 .serializeToJsonWith(new JacksonSerializer<>())
                 .setIssuedAt(toDate(now))
                 .setExpiration(toDate(now.plusDays(2)))
                 .setIssuer("Mais Role")
-                .setSubject(user.getId().toString())
-                .addClaims(Map.of("user", user))
+                .setSubject(settings.getUser().getId().toString())
+                .addClaims(Map.of("user", settings.getUser()))
                 .compact();
     }
 }
