@@ -64,12 +64,15 @@ public class HostController {
         }
     }
 
+    /*
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody HostLoginRequest req) {
         try {
             var host = service.logHost
         }
     }
+    
+     */
 
 
 }

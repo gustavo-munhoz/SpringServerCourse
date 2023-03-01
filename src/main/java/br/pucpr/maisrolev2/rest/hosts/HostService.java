@@ -25,11 +25,10 @@ public class HostService {
         if (hosts.isEmpty()) throw new NotFoundException("No hosts registered");
         return hosts;
     }
-
+    /*
     public Host logHost(String email, String password) {
         var host = hostRepository.findHostByContact_Email(email);
-        if (host.isPresent())
     }
-
+     */
 
 }
