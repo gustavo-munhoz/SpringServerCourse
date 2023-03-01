@@ -11,8 +11,8 @@
     <groupId>br.pucpr</groupId>
     <artifactId>MaisRoleV2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>musicserver</name>
-    <description>Music Server</description>
+    <name>maisrole</name>
+    <description>MaisRole</description>
     <properties>
         <java.version>17</java.version>
     </properties>
