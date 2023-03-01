@@ -54,7 +54,7 @@ public class UserService {
         if (userRepository.findByUsername(user.getUsername()).isEmpty()) {
             return userRepository.save(user);
         }
-        else throw new AlreadyExistsException("Username already taken.");
+        else throw new AlreadyExistsException("Username or email already taken.");
     }
 
     @Transactional
