@@ -2,6 +2,7 @@ package br.pucpr.maisrolev2.lib.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -60,6 +61,8 @@ public class ExceptionHandlers {
         return ResponseEntityBuilder.build(error);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<Object> handleAlreadyExistsException(AlreadyExistsException ex) {
         List<String> details = new ArrayList<>();
         details.add(ex.getMessage());
@@ -68,6 +71,22 @@ public class ExceptionHandlers {
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
                 "Resource already exists",
+                details
+        );
+
+        return ResponseEntityBuilder.build(error);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getMessage());
+
+        ApiError error = new ApiError(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED,
+                "Full authentication is required to access this resource.",
                 details
         );
 
