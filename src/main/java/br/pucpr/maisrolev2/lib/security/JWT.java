@@ -1,53 +1,69 @@
 package br.pucpr.maisrolev2.lib.security;
 
 import br.pucpr.maisrolev2.rest.users.User;
+import br.pucpr.maisrolev2.rest.users.UserLoginRequest;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.jackson.io.JacksonDeserializer;
+import io.jsonwebtoken.jackson.io.JacksonSerializer;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import org.hibernate.mapping.Set;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
+@Component
 public class JWT {
-    private static long EXPIRATION_TIME = 5 * 24 * 60 * 60 * 1000; //5 dias
+    private static SecuritySettings settings;
+    private static String PREFIX = "Bearer";
 
-    private static String SECRET = "$C&F)J@NcRfUjXn2r4u7x!A%D*G-KaPd";
-    private static final String PREFIX = "Bearer";
-
-    public static String token(User user){
-        var authorities = user.getRoles();
-
-        return PREFIX + " " + Jwts.builder()
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(EXPIRATION_TIME))
-                .setSubject(user.getUsername())
-                .setIssuer("maisrole")
-                .addClaims(Map.of("userId", user.getId()))
-                .addClaims(Map.of("authorities", authorities))
-                .signWith(SignatureAlgorithm.HS512, SECRET)
-                .compact();
+    public JWT(SecuritySettings settings) {
+        JWT.settings = settings;
     }
 
     public static Authentication extract(HttpServletRequest req) {
-        var header = req.getHeader(HttpHeaders.AUTHORIZATION);
+        final var header = req.getHeader(HttpHeaders.AUTHORIZATION);
         if (header == null || !header.startsWith(PREFIX)) return null;
 
-        var token = header.replace(PREFIX, "").trim();
-        var claims = Jwts.parser()
-                .setSigningKey(SECRET)
+        final var token = header.replace(PREFIX, "").trim();
+        final var claims = Jwts.parserBuilder()
+                .setSigningKey(settings.getSecret().getBytes())
+                .deserializeJsonWith(new JacksonDeserializer<>(Map.of("user", User.class)))
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
-        var user = claims.getSubject();
-        var authorities = claims.get("authorities", ArrayList.class)
-                .stream().map(o -> new SimpleGrantedAuthority(o.toString()))
+
+        if (!settings.getIssuer().equals(claims.getIssuer())) return null;
+
+        final var user = claims.get("user", User.class);
+        if (user == null) return null;
+
+        final var authorities = user.getRoles().stream()
+                .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
                 .toList();
-        return user == null? null :
-                UsernamePasswordAuthenticationToken.authenticated(user, claims.get("userId", Long.class), authorities);
+        return UsernamePasswordAuthenticationToken.authenticated(user, user.getId(), authorities);
+    }
+
+    public static Date toDate(LocalDate date) {
+        return Date.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
+    }
+    public String createToken(User user) {
+        final var now = LocalDate.now();
+        return Jwts.builder()
+                .signWith(Keys.hmacShaKeyFor(settings.getSecret().getBytes()))
+                .serializeToJsonWith(new JacksonSerializer<>())
+                .setIssuedAt(toDate(now))
+                .setExpiration(toDate(now.plusDays(2)))
+                .setIssuer("Mais Role")
+                .setSubject(user.getId().toString())
+                .addClaims(Map.of("user", user))
+                .compact();
     }
 }

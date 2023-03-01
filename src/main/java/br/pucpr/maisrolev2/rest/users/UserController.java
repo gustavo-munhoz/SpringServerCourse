@@ -4,7 +4,7 @@ import br.pucpr.maisrolev2.lib.exception.AlreadyExistsException;
 import br.pucpr.maisrolev2.lib.exception.ExceptionHandlers;
 import br.pucpr.maisrolev2.lib.exception.NotFoundException;
 import br.pucpr.maisrolev2.lib.exception.UnauthorizedException;
-import br.pucpr.maisrolev2.rest.reviews.Review;
+import br.pucpr.maisrolev2.lib.security.JWT;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -17,15 +17,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private JWT jwt;
     private final UserService service;
     private final ExceptionHandlers exceptionHandler;
-    public UserController(UserService service, ExceptionHandlers exceptionHandler) {
+    public UserController(JWT jwt, UserService service, ExceptionHandlers exceptionHandler) {
+        this.jwt = jwt;
         this.service = service;
         this.exceptionHandler = exceptionHandler;
     }
@@ -83,10 +82,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @PermitAll
     public ResponseEntity<Object> login(@RequestBody UserLoginRequest req) {
         try {
-            return ResponseEntity.ok(service.logUser(req.getUsername(), req.getPassword()));
+            var user = service.logUser(req.getUsername(), req.getPassword());
+            var token = jwt.createToken(user);
+            return token == null ?
+                    ResponseEntity.status(HttpStatus.UNAUTHORIZED).build() :
+                    ResponseEntity.ok(new UserDto(token));
+
         } catch (UnauthorizedException e) {
             return exceptionHandler.handleUnauthorizedException(e);
         }
