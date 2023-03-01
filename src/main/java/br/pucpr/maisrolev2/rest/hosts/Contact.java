@@ -1,4 +1,4 @@
-package br.pucpr.maisrolev2.rest.hosts.Contact;
+package br.pucpr.maisrolev2.rest.hosts;
 
 import jakarta.persistence.*;
 import lombok.Data;

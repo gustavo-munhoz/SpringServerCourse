@@ -1,4 +1,4 @@
-package br.pucpr.maisrolev2.rest.hosts.Address;
+package br.pucpr.maisrolev2.rest.hosts;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Data;
 public class Address {
     @Id
     private Long id;
-    private String stree;
+    private String street;
     private String number;
     private String CEP;
     private String district;
