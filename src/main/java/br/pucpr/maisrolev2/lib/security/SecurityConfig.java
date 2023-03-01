@@ -30,11 +30,9 @@ import org.springframework.web.filter.CorsFilter;
 @EnableMethodSecurity( securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
-    private UserRepository userRepository;
     private JwtTokenFilter jwtTokenFilter;
 
     public SecurityConfig(UserRepository userRepository, JwtTokenFilter jwtTokenFilter) {
-        this.userRepository = userRepository;
         this.jwtTokenFilter = jwtTokenFilter;
     }
 
@@ -64,19 +62,6 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-                /*
-                .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/hosts/register").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/hosts/login").permitAll()
-
-                .anyRequest().authenticated().and()
-                .addFilterBefore(
-                        jwtTokenFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                ).build();
-
-                 */
     }
     @Bean
     public CorsFilter corsFilter() {

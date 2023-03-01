@@ -1,7 +1,5 @@
 package br.pucpr.maisrolev2.rest.hosts;
 
-import br.pucpr.maisrolev2.rest.hosts.Address.Address;
-import br.pucpr.maisrolev2.rest.hosts.Contact.Contact;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -26,10 +24,10 @@ public class Host {
     @ElementCollection
     private Set<HostType> hostTypes;
 
-    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Contact contact;
 
-    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     //private Agenda agenda;
