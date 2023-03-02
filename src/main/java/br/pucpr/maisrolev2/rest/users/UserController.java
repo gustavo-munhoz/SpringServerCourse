@@ -1,6 +1,10 @@
 package br.pucpr.maisrolev2.rest.users;
 
 import br.pucpr.maisrolev2.lib.exception.*;
+import br.pucpr.maisrolev2.lib.security.JWT;
+import br.pucpr.maisrolev2.rest.reviews.Review;
+import br.pucpr.maisrolev2.rest.users.requests.UserLoginRequest;
+import br.pucpr.maisrolev2.rest.users.responses.UserLoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,10 +18,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -25,12 +31,14 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService service;
     private final ExceptionHandlers exceptionHandler;
-    public UserController(UserService service, ExceptionHandlers exceptionHandler) {
+    private JWT jwt;
+    public UserController(UserService service, ExceptionHandlers exceptionHandler, JWT jwt) {
+        this.jwt = jwt;
         this.service = service;
         this.exceptionHandler = exceptionHandler;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @Transactional
     @Operation(
             summary = "Get user by ID",
@@ -44,12 +52,8 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "User not found.")
             }
     )
-    public ResponseEntity<Object> searchUser(@PathVariable(value = "id") @PositiveOrZero Long id) {
-        try {
-            return ResponseEntity.ok(service.getUser(id));
-        } catch (NotFoundException e) {
-            return exceptionHandler.handleNotFoundException(e);
-        }
+    public ResponseEntity<User> searchUser(@PathVariable(value = "id") @PositiveOrZero Long id) {
+        return ResponseEntity.ok(service.getUser(id));
     }
 
     @GetMapping("/all")
@@ -65,15 +69,11 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "No users found.")
             }
     )
-    public ResponseEntity<Object> showAllUsers() {
-        try {
-            return ResponseEntity.ok(service.getAllUsers());
-        } catch (NotFoundException e) {
-            return exceptionHandler.handleNotFoundException(e);
-        }
+    public ResponseEntity<List<User>> showAllUsers() {
+        return ResponseEntity.ok(service.getAllUsers());
     }
 
-    @GetMapping("{id}/reviews")
+    @GetMapping("/me/reviews")
     @Transactional
     @RolesAllowed({"USER", "ADMIN"})
     @SecurityRequirement(name = "AuthServer")
@@ -90,14 +90,9 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "User not found")
             }
     )
-    public ResponseEntity<Object> getAllReviews(@PathVariable("id") Long id) {
-        try {
-            return ResponseEntity.ok(service.getReviewsByUser(id));
-        } catch (NotFoundException e) {
-            return exceptionHandler.handleNotFoundException(e);
-        } catch (AccessDeniedException e) {
-            return exceptionHandler.handleAccessDeniedException(e);
-        }
+    public ResponseEntity<List<Review>> getAllReviews(Authentication auth) {
+        var reviews = service.getReviewsByUser((Long) auth.getCredentials());
+        return ResponseEntity.ok(reviews);
     }
 
     @PostMapping("/register")
@@ -122,15 +117,12 @@ public class UserController {
             }
             service.add(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (AlreadyExistsException e) {
-            return exceptionHandler.handleAlreadyExistsException(e);
         } catch (MethodArgumentNotValidException e) {
             return exceptionHandler.handleValidationException(e);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
-
     @PostMapping("/login")
     @PermitAll
     @Operation(
@@ -139,7 +131,7 @@ public class UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "User logged in.",
                             content = {@Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = User.class))}
+                                    schema = @Schema(implementation = UserLoginRequest.class))}
                     ),
                     @ApiResponse(responseCode = "400", description = "Invalid data provided"),
                     @ApiResponse(responseCode = "401", description = "Incorrect username or password."),
@@ -147,17 +139,14 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "Username does not exist.")
             }
     )
-    public ResponseEntity<Object> login(@RequestBody UserLoginRequest req) {
-        try {
-            return ResponseEntity.ok(service.logUser(req.getUsername(), req.getPassword()));
-        } catch (UnauthorizedException e) {
-            return exceptionHandler.handleUnauthorizedException(e);
-        } catch (NotFoundException e) {
-            return exceptionHandler.handleNotFoundException(e);
-        }
+    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginRequest req) {
+        var user = service.logUser(req.getUsername(), req.getPassword());
+        var token = jwt.createToken(user);
+
+        return ResponseEntity.ok(new UserLoginResponse(token, user));
     }
 
-    @PutMapping("/update")
+    @PutMapping("/me/update")
     @Transactional
     @RolesAllowed({"USER", "ADMIN"})
     @SecurityRequirement(name = "AuthServer")
@@ -187,14 +176,12 @@ public class UserController {
             return exceptionHandler.handleValidationException(e);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
-        } catch (AccessDeniedException e) {
-            return exceptionHandler.handleAccessDeniedException(e);
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/me/delete")
     @Transactional
-    @RolesAllowed("USER")
+    @RolesAllowed({"USER", "ADMIN"})
     @SecurityRequirement(name = "AuthServer")
     @Operation(
             summary = "Deletes current user",
@@ -205,12 +192,8 @@ public class UserController {
             }
 
     )
-    public ResponseEntity<Object> delete(@PathVariable("id") Long id) {
-        try {
-            service.deleteUser(id);
-            return ResponseEntity.ok().build();
-        } catch (AccessDeniedException e) {
-            return exceptionHandler.handleAccessDeniedException(e);
-        }
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        service.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 }

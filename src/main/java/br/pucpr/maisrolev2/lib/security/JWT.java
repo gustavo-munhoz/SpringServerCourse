@@ -1,7 +1,6 @@
 package br.pucpr.maisrolev2.lib.security;
 
 import br.pucpr.maisrolev2.rest.users.User;
-import br.pucpr.maisrolev2.rest.users.UserLoginRequest;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.jsonwebtoken.jackson.io.JacksonSerializer;
@@ -17,7 +16,6 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 
 @Component
 public class JWT {

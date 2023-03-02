@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
         name="Review.findAllByUserId",
         query="SELECT r FROM Review r" +
                 " JOIN r.user u" +
-                " WHERE u = :id" +
+                " WHERE u.id = :id" +
                 " ORDER BY r.id"
 )
 @NamedQuery(
         name="Review.findAllByHostId",
         query="SELECT r FROM Review r" +
                 " JOIN r.host h" +
-                " WHERE h = :id" +
+                " WHERE h.id = :id" +
                 " ORDER BY r.id"
 )
 public class Review {

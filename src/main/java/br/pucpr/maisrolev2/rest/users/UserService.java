@@ -30,7 +30,7 @@ public class UserService {
             }
             throw new UnauthorizedException("Incorrect username or password.");
         }
-        throw new NotFoundException("User not found.");
+        throw new NotFoundException("Incorrect username or password.");
     }
 
     public User getUser(Long id) {
